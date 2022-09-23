@@ -1,6 +1,11 @@
 import csv
 import re
-
+from wordcloud import WordCloud, STOPWORDS
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+from PIL import Image
+stopwords = set(STOPWORDS)
 list_of_column_names = []
 data = []
 total = dict()
@@ -36,10 +41,10 @@ with open("Shakespeare_data.csv", newline="") as csvfile:
                         res = re.sub(r"[^\w\s]", "", p)
                         # adds the lowercase and puctuationless word to the spokenWordsArray
                         spokenWordsArray.append(res)
-                        if res in total:
+                        if res in total and res not in stopwords:
                             # Increment count of word by 1
                             total[res] = total[res] + 1
-                        else:
+                        elif res not in total and res not in stopwords:
                             # Add the word to dictionary with count 1
                             total[res] = 1
                     # adds the edited spoken words to the rowData
@@ -48,6 +53,13 @@ with open("Shakespeare_data.csv", newline="") as csvfile:
         if len(rowData) > 0:
             data.append(rowData)
 
+
+shakespeareMask = np.array(Image.open("william-shakespeare-black-silhouette.jpg"))
 #sorts the dict by the highest repeated word https://careerkarma.com/blog/python-sort-a-dictionary-by-value/
 sortedDict = sorted(total.items(), key=lambda x: x[1], reverse=True)
 print(sortedDict)
+#generates a wordcloud from the dict
+wordcloud = WordCloud(width = 1920, height = 1080, background_color ='black', min_font_size = 10,mask = shakespeareMask).generate_from_frequencies(total)
+plt.imshow(wordcloud, interpolation="bilinear")
+plt.axis("off")
+plt.show()
