@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript Tag Cloud Chart</title>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-tag-cloud.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <style>
+        html, body, #container {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <script>
+        anychart.onDocumentReady(function () {
+            d3.csv("shakespeare.csv", function (data){
+                            // create a tag (word) cloud chart
+            var chart = anychart.tagCloud(data);
+
+            // set a chart title
+            chart.title('Most Common Words in Shakespeares Plays')
+            // set an array of angles at which the words will be laid out
+            chart.angles([0])
+            // display the word cloud chart
+            chart.container("container");
+                chart.draw();
+                chart.listen("pointClick", function (e) {
+                    var url = "https://www.wordreference.com/enfr/" + e.point.get("x");
+                    window.open(url, "_blank");
+                });
+            });
+        });
+    </script>
+</body>
+</html>

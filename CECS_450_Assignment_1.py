@@ -1,10 +1,6 @@
 import csv
 import re
-from wordcloud import WordCloud, STOPWORDS
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
-from PIL import Image
+from wordcloud import STOPWORDS
 stopwords = set(STOPWORDS)
 list_of_column_names = []
 data = []
@@ -17,15 +13,12 @@ with open("Shakespeare_data.csv", newline="") as csvfile:
         break
     #array of the index of columns that get looped over
     #columns are [Dataline', 'Play', 'PlayerLinenumber', 'ActSceneLine', 'Player', 'PlayerLine']
-    included_cols = [1,4,5]
+    included_cols = [5]
     for row in reader:
         #all of the data for one row is appended to this array
         rowData = []
         for i in included_cols:
             if len(row[3]) > 0:
-                # enters block when the column being read is either the playName or characterName column
-                if i == 1 or i == 4:
-                    rowData.append(row[i])
                 # enters block when the column being read is the spoken words
                 if i == 5:
                     # array to hold the spoken words
@@ -54,12 +47,18 @@ with open("Shakespeare_data.csv", newline="") as csvfile:
             data.append(rowData)
 
 
-shakespeareMask = np.array(Image.open("william-shakespeare-black-silhouette.jpg"))
 #sorts the dict by the highest repeated word https://careerkarma.com/blog/python-sort-a-dictionary-by-value/
 sortedDict = sorted(total.items(), key=lambda x: x[1], reverse=True)
-print(sortedDict)
-#generates a wordcloud from the dict
-wordcloud = WordCloud(width = 1920, height = 1080, background_color ='black', min_font_size = 10,mask = shakespeareMask).generate_from_frequencies(total)
-plt.imshow(wordcloud, interpolation="bilinear")
-plt.axis("off")
-plt.show()
+wordCount = "User Input"
+while True:
+    wordCount = input("Enter Word Count for Word Cloud\n")
+    if wordCount.isdigit():
+        wordCount = int(wordCount)
+        break
+count = 0
+with open('shakespeare.csv', 'w') as f:
+    f.write("x,value\n")
+    for x in sortedDict:
+        if count < wordCount:
+            f.write("%s,%s\n"%(x[0],x[1]))
+            count+=1
