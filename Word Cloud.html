@@ -20,17 +20,18 @@
     <div id="container"></div>
     <script>
         anychart.onDocumentReady(function () {
-            d3.csv("shakespeare.csv", function (data){
-                            // create a tag (word) cloud chart
-            var chart = anychart.tagCloud(data);
-
-            // set a chart title
-            chart.title('Most Common Words in Shakespeares Plays')
-            // set an array of angles at which the words will be laid out
-            chart.angles([0])
-            // display the word cloud chart
-            chart.container("container");
+            //uses d3 to parse the csv into usable data for the wordcloud
+            d3.csv("shakespeare.csv", function (data) {
+                // create a tag (word) cloud chart
+                var chart = anychart.tagCloud(data);
+                // set a chart title
+                chart.title('Most Common Words in Shakespeares Plays')
+                // set an array of angles at which the words will be laid out
+                chart.angles([0])
+                // display the word cloud chart
+                chart.container("container");
                 chart.draw();
+                //function that gets the value of x (word string) and opens a link to that word in an english to french dictionary
                 chart.listen("pointClick", function (e) {
                     var url = "https://www.wordreference.com/enfr/" + e.point.get("x");
                     window.open(url, "_blank");
